@@ -28,7 +28,10 @@ O sistema é composto pelos seguintes componentes principais:
 - **Banco de Dados**: PostgreSQL
 - **Mensageria**: RabbitMQ
 - **Cache**: Redis
-- **Linguagem de Programação**: [Especificar a linguagem utilizada, como Python, Java, etc.]
+- **Linguagem de Programação**: ???
 
 ## Diagrama de Sequência
-![Diagrama de Sequência](link_para_o_diagrama)
+![Diagrama de Sequência](out/AplicationDiagrams/sequencediagram/sequencediagram.png)
+
+## Diagrama de Classe
+![Diagrama de Classe](out/AplicationDiagrams/classdiagram/classdiagram.png)
