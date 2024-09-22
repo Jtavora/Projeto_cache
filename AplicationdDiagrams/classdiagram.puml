@@ -1,0 +1,47 @@
+@startuml
+package "Sistema de Cache Dinâmico" {
+
+    class Database {
+        +getData(query: String): String
+        +updateData(query: String): void
+    }
+
+    class Trigger {
+        +onChange(): void
+    }
+
+    class Notification {
+        +sendNotification(): void
+    }
+
+    class RabbitMQ {
+        +sendMessage(message: String): void
+        +receiveMessage(): String
+    }
+
+    class Observer {
+        +notifyChange(): void
+        +listen(): void
+    }
+
+    class Proxy {
+        +getFromCache(key: String): String
+        +updateCache(key: String, value: String): void
+        +invalidateCache(key: String): void
+    }
+
+    class Cache {
+        +get(key: String): String
+        +set(key: String, value: String): void
+        +delete(key: String): void
+    }
+
+    Trigger --> Database : "detect change"
+    Database --> Notification : "trigger notification"
+    Notification --> RabbitMQ : "send notification"
+    RabbitMQ --> Observer : "notify change"
+    Observer --> Proxy : "invalidate/update cache"
+    Proxy --> Cache : "update/invalidate cache"
+}
+
+@enduml

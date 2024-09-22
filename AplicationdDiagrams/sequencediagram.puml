@@ -1,0 +1,33 @@
+@startuml
+actor User
+participant Proxy
+participant Cache
+participant Database
+participant Trigger
+participant Notification
+participant RabbitMQ
+participant Observer
+
+User -> Proxy : Request Data
+Proxy -> Cache : Check Data
+alt Data in Cache
+    Cache -> Proxy : Return Cached Data
+    Proxy -> User : Return Cached Data
+else Data not in Cache
+    Proxy -> Database : Query Data
+    Database -> Proxy : Return Data
+    Proxy -> Cache : Update Cache
+    Proxy -> User : Return Data
+end
+
+User -> Proxy : Update Data
+Proxy -> Database : Update Data
+Database -> Trigger : Detect Change
+Trigger -> Notification : Trigger Notification
+Notification -> RabbitMQ : Send Notification
+RabbitMQ -> Observer : Notify Change
+Observer -> Proxy : Invalidate/Update Cache
+Proxy -> Cache : Invalidate/Update Cache
+Proxy -> Observer : Acknowledge Update
+Observer -> RabbitMQ : Acknowledge Notification
+@enduml
