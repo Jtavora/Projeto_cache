@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/jtavora/Projeto_cache/LogMonitoring/LogMonitoring.csproj": {}
+    "/home/jtavora/Projeto_cache/E-Commerce/E-Commerce.csproj": {}
   },
   "projects": {
-    "/home/jtavora/Projeto_cache/LogMonitoring/LogMonitoring.csproj": {
+    "/home/jtavora/Projeto_cache/E-Commerce/E-Commerce.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/jtavora/Projeto_cache/LogMonitoring/LogMonitoring.csproj",
-        "projectName": "LogMonitoring",
-        "projectPath": "/home/jtavora/Projeto_cache/LogMonitoring/LogMonitoring.csproj",
+        "projectUniqueName": "/home/jtavora/Projeto_cache/E-Commerce/E-Commerce.csproj",
+        "projectName": "E-Commerce",
+        "projectPath": "/home/jtavora/Projeto_cache/E-Commerce/E-Commerce.csproj",
         "packagesPath": "/home/jtavora/.nuget/packages/",
-        "outputPath": "/home/jtavora/Projeto_cache/LogMonitoring/obj/",
+        "outputPath": "/home/jtavora/Projeto_cache/E-Commerce/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/jtavora/.nuget/NuGet/NuGet.Config"
@@ -43,17 +43,27 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.SignalR": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[1.1.0, )"
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             },
             "StackExchange.Redis": {
               "target": "Package",
-              "version": "[2.8.16, )"
+              "version": "[2.8.22, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[6.6.2, )"
             }
           },
           "imports": [
