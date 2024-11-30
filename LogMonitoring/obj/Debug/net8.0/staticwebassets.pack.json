@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "/home/jtavora/LogMonitoring/wwwroot/front.html",
+      "PackagePath": "staticwebassets/front.html"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.LogMonitoring.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.LogMonitoring.props",
+      "PackagePath": "build\\LogMonitoring.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.LogMonitoring.props",
+      "PackagePath": "buildMultiTargeting\\LogMonitoring.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.LogMonitoring.props",
+      "PackagePath": "buildTransitive\\LogMonitoring.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

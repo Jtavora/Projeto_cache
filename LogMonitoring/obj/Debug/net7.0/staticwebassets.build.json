@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "oRW3zAGliZNgWRAOD+qKVVtqj8u3zvg6ueyrVkzHeEE=",
+  "Source": "LogMonitoring",
+  "BasePath": "_content/LogMonitoring",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

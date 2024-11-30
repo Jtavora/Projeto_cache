@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Log Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@5.0.10/dist/browser/signalr.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #logList {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #logList li {
+            padding: 12px;
+            margin-bottom: 8px;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+        #logInput {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #logInput input {
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #logInput button {
+            padding: 8px 16px;
+            margin-left: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #logInput button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Logs em Tempo Real</h1>
+    
+    <ul id="logList"></ul>
+
+    <h3>Adicionar Novo Log</h3>
+    <div id="logInput">
+        <label for="logMessage">Mensagem do Log:</label>
+        <input type="text" id="logMessage" placeholder="Digite a mensagem do log">
+        <button onclick="addLog()">Adicionar Log</button>
+    </div>
+
+    <div id="messageContainer" class="message"></div>
+
+    <script>
+        // Configuração do SignalR para se conectar ao Hub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/loghub") // URL do Hub SignalR
+            .build();
+
+        // Função para ouvir a chegada de novos logs
+        connection.on("ReceiveLog", function(logId, message) {
+            const logList = document.getElementById("logList");
+            const newLog = document.createElement("li");
+            newLog.textContent = `Log ID: ${logId} - Mensagem: ${message}`;
+            logList.appendChild(newLog);
+        });
+
+        // Iniciar a conexão com o SignalR
+        connection.start().catch(function(err) {
+            return console.error("Erro na conexão com o SignalR: ", err.toString());
+        });
+
+        // Função para adicionar um log via API
+        function addLog() {
+            const logMessage = document.getElementById("logMessage").value;
+
+            if (logMessage.trim() === "") {
+                showMessage("Por favor, insira uma mensagem de log.", "error");
+                return;
+            }
+
+            const logData = {
+                logId: new Date().getTime().toString(), // Gerando um LogId único com o timestamp
+                message: logMessage
+            };
+
+            // Enviar o log para a API via POST
+            fetch("/api/logs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(logData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log("Log adicionado com sucesso!");
+                    showMessage("Log adicionado com sucesso!", "success");
+                    document.getElementById("logMessage").value = ""; // Limpar o campo de entrada
+                } else {
+                    showMessage("Erro ao adicionar log. Tente novamente.", "error");
+                }
+            })
+            .catch(error => {
+                showMessage("Erro na requisição: " + error, "error");
+            });
+        }
+
+        // Função para mostrar mensagens de sucesso ou erro
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById("messageContainer");
+            messageContainer.textContent = message;
+            messageContainer.className = "message " + type;
+            setTimeout(() => {
+                messageContainer.textContent = "";
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "i9TmjXwCfnVOpLeNy7qR6T/XNLZOu+xtU510bd6p7Ko=",
+  "Source": "LogMonitoring",
+  "BasePath": "_content/LogMonitoring",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "LogMonitoring/wwwroot",
+      "Source": "LogMonitoring",
+      "ContentRoot": "/home/jtavora/LogMonitoring/wwwroot/",
+      "BasePath": "_content/LogMonitoring",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/home/jtavora/LogMonitoring/wwwroot/front.html",
+      "SourceId": "LogMonitoring",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/jtavora/LogMonitoring/wwwroot/",
+      "BasePath": "_content/LogMonitoring",
+      "RelativePath": "front.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/front.html"
+    }
+  ]
+}
