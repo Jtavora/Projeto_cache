@@ -175,7 +175,5 @@
 /home/jtavora/Projeto_cache/E-Commerce/obj/Debug/net8.0/E-Commerce.pdb
 /home/jtavora/Projeto_cache/E-Commerce/obj/Debug/net8.0/E-Commerce.genruntimeconfig.cache
 /home/jtavora/Projeto_cache/E-Commerce/obj/Debug/net8.0/ref/E-Commerce.dll
-/home/jtavora/Projeto_cache/E-Commerce/bin/Debug/net8.0/E-Commerce.xml
-/home/jtavora/Projeto_cache/E-Commerce/obj/Debug/net8.0/E-Commerce.xml
 /home/jtavora/Projeto_cache/E-Commerce/bin/Debug/net8.0/Castle.Core.dll
 /home/jtavora/Projeto_cache/E-Commerce/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.Proxies.dll

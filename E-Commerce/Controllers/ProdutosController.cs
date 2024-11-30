@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
@@ -12,46 +8,40 @@ namespace E_Commerce.Controllers
     [Route("api/[controller]")]
     public class ProdutosController : ControllerBase
     {
-        private readonly ECommerceContext _context;
+        private readonly IProdutoService _produtoService;
 
-        public ProdutosController(ECommerceContext context)
+        public ProdutosController(IProdutoService produtoService)
         {
-            _context = context;
+            _produtoService = produtoService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Produto>> Get()
+        public async Task<ActionResult<IEnumerable<Produto>>> Get()
         {
-            var produtos = _context.Produtos.ToList();
-
-            if (produtos.Count == 0)
+            var produtos = await _produtoService.GetAllProdutosAsync();
+            if (produtos == null || !produtos.Any())
             {
                 return NotFound();
             }
-
             return Ok(produtos);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Produto> Get(int id)
+        public async Task<ActionResult<Produto>> Get(int id)
         {
-            var produto = _context.Produtos.Find(id);
-
+            var produto = await _produtoService.GetProdutoByIdAsync(id);
             if (produto == null)
             {
                 return NotFound();
             }
-
-            return produto;
+            return Ok(produto);
         }
 
         [HttpPost]
-        public ActionResult<Produto> Post([FromBody] Produto produto)
+        public async Task<ActionResult<Produto>> Post([FromBody] Produto produto)
         {
-            _context.Produtos.Add(produto);
-            _context.SaveChanges();
-
-            return CreatedAtAction(nameof(Get), new { id = produto.Id }, produto);
+            var createdProduto = await _produtoService.CreateProdutoAsync(produto);
+            return CreatedAtAction(nameof(Get), new { id = createdProduto.Id }, createdProduto);
         }
     }
 }
