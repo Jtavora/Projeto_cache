@@ -25,7 +25,7 @@ O sistema é composto pelos seguintes componentes principais:
 6. **Atualização do Cache**: O Observer recebe a notificação e informa o Proxy para invalidar ou atualizar o Cache.
 
 ## Tecnologias Utilizadas
-- **Banco de Dados**: PostgreSQL
+- **Banco de Dados**: SQLServer, MongoDB, Redis
 - **Mensageria**: RabbitMQ
 - **Cache**: Redis
 - **Frameworks**: .NET, FastApi
