@@ -28,7 +28,7 @@ O sistema é composto pelos seguintes componentes principais:
 - **Banco de Dados**: PostgreSQL
 - **Mensageria**: RabbitMQ
 - **Cache**: Redis
-- **Linguagem de Programação**: ???
+- **Frameworks**: .NET, FastApi
 
 ## Diagrama de Sequência
 ![Diagrama de Sequência](out/AplicationDiagrams/sequencediagram/sequencediagram.png)
