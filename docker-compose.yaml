@@ -19,9 +19,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: mydatabase
-      MONGO_INITDB_ROOT_USERNAME: user
-      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     networks:
       - kong-net
   
@@ -33,6 +33,18 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development  # ou Production, conforme necessário
     depends_on:
       - redis
+    networks:
+      - kong-net
+  
+  ecommerce:
+    build: ./ECommerce
+    ports:
+      - "5171:5171"   # Expondo a porta 5171
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development  # ou Production, conforme necessário
+    depends_on:
+      - redis
+      - sqlserver
     networks:
       - kong-net
 
@@ -91,8 +103,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: teste
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -108,7 +120,23 @@ services:
       - "1433:1433"
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "SuaSenha123!"
+      SA_PASSWORD: ${SA_PASSWORD}
+    networks:
+      - kong-net
+  
+  consumer:
+    build: ./ConsumerApp
+    container_name: consumer
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_QUEUE: product_changes
+      RABBITMQ_USER: admin
+      RABBITMQ_PASS: teste
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - rabbitmq
+      - redis
     networks:
       - kong-net
       
