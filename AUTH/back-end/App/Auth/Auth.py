@@ -45,7 +45,7 @@ class Auth:
             else:
                 return JSONResponse(status_code=403, content={"message": "Invalid credentials"})
 
-        exp = datetime.utcnow() + timedelta(minutes=30)
+        exp = datetime.utcnow() + timedelta(minutes=2)
         payload = {
             "username": user.username,
             "role": user.role,
@@ -57,7 +57,7 @@ class Auth:
         return {
             "access_token": token,
             "token_type": "bearer",
-            "exp": exp.isoformat(),
+            "exp": exp,
             "role": user.role,
             "username": user.username,
             "id": str(user.id)
