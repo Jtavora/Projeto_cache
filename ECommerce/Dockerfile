@@ -19,5 +19,9 @@ RUN dotnet tool install --global dotnet-ef
 # Adicionar o diretório de ferramentas globais ao PATH
 ENV PATH="$PATH:/root/.dotnet/tools"
 
-# Aplicar as migrações no tempo de execução
-CMD ["bash", "-c", "dotnet ef database update && dotnet run --no-build --urls http://0.0.0.0:5171"]
+# Copie o script wait-for-it
+COPY wait-for-it.sh .
+RUN chmod +x wait-for-it.sh
+
+# Aplicar as migrações no tempo de execução, garantindo que RabbitMQ e SQL Server estejam prontos
+CMD ["./wait-for-it.sh", "rabbitmq:5672", "--", "./wait-for-it.sh", "sqlserver:1433", "--", "bash", "-c", "dotnet ef database update && dotnet run --no-build --urls http://0.0.0.0:5171"]

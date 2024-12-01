@@ -13,5 +13,9 @@ RUN npm install
 # Copie o código da aplicação
 COPY . .
 
-# Execute o aplicativo
-CMD ["node", "consumer.js"]
+# Copie o script wait-for-it
+COPY wait-for-it.sh .
+RUN chmod +x wait-for-it.sh
+
+# Execute o aplicativo usando wait-for-it para o RabbitMQ
+CMD ["./wait-for-it.sh", "rabbitmq:5672", "--", "node", "consumer.js"]
