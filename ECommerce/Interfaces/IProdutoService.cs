@@ -8,5 +8,6 @@ namespace E_Commerce.Interfaces
         Task<Produto> GetProdutoByIdAsync(int id);
         Task<Produto> CreateProdutoAsync(Produto produto);
         Task<Produto> UpdateProdutoAsync(int id, Produto produto);
+        Task<Produto> DeleteProdutoAsync(int id);
     }
 }

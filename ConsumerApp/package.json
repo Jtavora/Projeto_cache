@@ -1,0 +1,13 @@
+{
+    "name": "rabbitmq-consumer",
+    "version": "1.0.0",
+    "description": "Consumer service for RabbitMQ and Redis",
+    "main": "consumer.js",
+    "scripts": {
+      "start": "node consumer.js"
+    },
+    "dependencies": {
+      "amqplib": "^0.8.0",
+      "redis": "^4.0.0"
+    }
+  }

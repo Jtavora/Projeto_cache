@@ -85,5 +85,18 @@ namespace E_Commerce.Services
 
             return existingProduto;
         }
+
+        public async Task<Produto> DeleteProdutoAsync(int id)
+        {
+            var produto = await _context.Produtos.FindAsync(id);
+
+            if (produto != null)
+            {
+                _context.Produtos.Remove(produto);
+                await _context.SaveChangesAsync();
+            }
+
+            return produto;
+        }
     }
 }

@@ -1,17 +1,17 @@
-# Use uma imagem base do Python
-FROM python:3.8
+# Use a imagem base do Node.js
+FROM node:16
 
 # Crie um diretório de trabalho
 WORKDIR /app
 
-# Copie todos os arquivos para o contêiner
+# Copie o package.json e package-lock.json
+COPY package*.json ./
+
+# Instale as dependências
+RUN npm install
+
+# Copie o código da aplicação
 COPY . .
 
-# Instale as dependências do Python
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Conceder permissão de execução para o script
-RUN chmod +x script.sh
-
-# Defina o script como o ponto de entrada
-CMD ["./script.sh"]
+# Execute o aplicativo
+CMD ["node", "consumer.js"]

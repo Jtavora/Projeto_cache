@@ -54,5 +54,18 @@ namespace E_Commerce.Controllers
             }
             return Ok(updatedProduto);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var deletedProduto = await _produtoService.DeleteProdutoAsync(id);
+
+            if (deletedProduto == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(deletedProduto);
+        }
     }
 }
