@@ -65,9 +65,6 @@ namespace E_Commerce.Services
                 existingProduto.Ativo = produto.Ativo;
 
                 await _context.SaveChangesAsync();
-
-                // Invalidate cache
-                await _cacheService.SetCacheValueAsync("produtos", string.Empty);
             }
 
             return existingProduto;

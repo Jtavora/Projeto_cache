@@ -3,6 +3,7 @@ using E_Commerce.DTOsCustom;
 using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using E_Commerce.Interfaces;
+using System.Text.Json;
 
 namespace E_Commerce.Services
 {
@@ -10,11 +11,13 @@ namespace E_Commerce.Services
     {
         private readonly ECommerceContext _context;
         private readonly ILoggingService _logger;
+        private readonly ICacheService _cacheService;
 
-        public VendaService(ECommerceContext context, ILoggingService logger)
+        public VendaService(ECommerceContext context, ILoggingService logger, ICacheService cacheService)
         {
             _context = context;
             _logger = logger;
+            _cacheService = cacheService;
         }
 
         public async Task<IEnumerable<Venda>> GetAllVendasAsync()
@@ -27,10 +30,25 @@ namespace E_Commerce.Services
 
         public async Task<Venda> GetVendaByIdAsync(int id)
         {
-            return await _context.Vendas
+            string cacheKey = $"venda:{id}";
+            var cachedVenda = await _cacheService.GetCacheValueAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedVenda))
+            {
+                return JsonSerializer.Deserialize<Venda>(cachedVenda);
+            }
+
+            var venda = await _context.Vendas
                 .Include(v => v.ItensVenda)
                 .ThenInclude(iv => iv.Produto)
                 .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (venda != null)
+            {
+                await _cacheService.SetCacheValueAsync(cacheKey, JsonSerializer.Serialize(venda), TimeSpan.FromMinutes(10));
+            } 
+
+            return venda;
         }
 
         public async Task<Venda> CreateVendaAsync(VendaDTO vendaDTO)
