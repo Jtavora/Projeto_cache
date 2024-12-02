@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from App.ABAC import Abac
 from fastapi.responses import JSONResponse
+from App.CacheService import Cache
 import calendar
 
 crypto = CryptContext(schemes=["sha256_crypt"])
@@ -19,6 +20,7 @@ class Auth:
         self.secret_key = secret_key
         self.algorithm = algorithm
         self.abac = Abac()
+        self.cache = Cache()
 
     def user_login(self, data):
         if not self.abac.can_acess(data.location):
@@ -46,30 +48,39 @@ class Auth:
             else:
                 return JSONResponse(status_code=403, content={"message": "Invalid credentials"})
 
+        # Verificar se já existe um token válido no cache
+        cached_token = self.cache.get(user.username)
+        if cached_token:
+            exp_timestamp = cached_token['exp']
+            if datetime.utcnow() < datetime.utcfromtimestamp(exp_timestamp):
+                return cached_token
+
         # Configurando o tempo de expiração para 2 minutos no futuro
         exp = datetime.utcnow() + timedelta(minutes=2)
-
-        # Convertendo para timestamp UNIX
         exp_timestamp = calendar.timegm(exp.utctimetuple())
 
         # Criando o payload do JWT
         payload = {
             "username": user.username,
             "role": user.role,
-            "exp": exp_timestamp,  # Usando o timestamp UNIX
+            "exp": exp_timestamp,
             "iss": "auth"
         }
 
         token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
 
-        return {
+        # Armazenar token no cache com tempo de expiração
+        cached_token = {
             "access_token": token,
             "token_type": "bearer",
-            "exp": exp,
+            "exp": exp_timestamp,
             "role": user.role,
             "username": user.username,
             "id": str(user.id)
         }
+        self.cache.set(user.username, cached_token, ex=120)  # Expira em 120 segundos
+
+        return cached_token
 
     def verify_token(self, token):
         try:
