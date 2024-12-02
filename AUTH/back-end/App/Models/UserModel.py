@@ -3,7 +3,7 @@ from bson import ObjectId
 import uuid
 
 # Configuração da conexão com o MongoDB
-client = MongoClient("mongodb://user:password@mongo:27017/")
+client = MongoClient("mongodb://user:password@mongo:27017/", readPreference='primary')
 db = client["AppDatabase"]  # Substitua pelo nome do seu banco de dados
 users_collection = db["users"]
 
@@ -25,6 +25,13 @@ class UserModel:
     @staticmethod
     def create_user(user_data):
         result = users_collection.insert_one(user_data.to_dict())
+        if result:
+            return user_data.to_dict()
+        return None
+
+    @staticmethod
+    def update_user(user_data):
+        result = users_collection.update_one({"_id": user_data.id}, {"$set": user_data.to_dict()})
         if result:
             return user_data.to_dict()
         return None

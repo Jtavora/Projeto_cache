@@ -69,6 +69,7 @@ class Auth:
         payload = {
             "username": user.username,
             "role": user.role,
+            "features": PermissionModel.get_features_by_role(user.role),
             "exp": exp_timestamp,
             "iss": "auth"
         }
@@ -81,6 +82,7 @@ class Auth:
             "token_type": "bearer",
             "exp": exp_timestamp,
             "role": user.role,
+            "features": PermissionModel.get_features_by_role(user.role),
             "username": user.username,
             "id": str(user.id)
         }

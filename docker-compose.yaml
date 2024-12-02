@@ -90,11 +90,14 @@ services:
       KONG_PG_USER: kong
       KONG_PG_PASSWORD: kong
       KONG_ADMIN_LISTEN: '0.0.0.0:8001, 0.0.0.0:8444 ssl'
+      KONG_PLUGINS: bundled,feature-check
     ports:
       - "8000:8000"   # Porta de proxy HTTP
       - "8443:8443"   # Porta de proxy HTTPS
       - "8001:8001"   # Porta de administração HTTP
       - "8444:8444"   # Porta de administração HTTPS
+    volumes:
+      - ./kong-plugin-feature-check:/usr/local/share/lua/5.1/kong/plugins/feature-check
     networks:
       - kong-net
     depends_on:

@@ -12,6 +12,11 @@ def create_user(user: User, token_data: dict = Depends(token_verifier)):
     usuario = user_controller.create_user(user, token_data)
     return usuario
 
+@userRouter.post("/update_user")
+def update_user(user: User, token_data: dict = Depends(token_verifier)):
+    usuario = user_controller.update_user(user, token_data)
+    return usuario
+
 @userRouter.get("/get_all_users")
 def get_all_users(token_data: dict = Depends(token_verifier)):
     return user_controller.get_all_users(token_data)

@@ -3,7 +3,7 @@ from bson import ObjectId
 import uuid
 
 # Configuração da conexão com o MongoDB
-client = MongoClient("mongodb://user:password@mongo:27017/")
+client = MongoClient("mongodb://user:password@mongo:27017/", readPreference='primary')
 db = client["AppDatabase"]
 permissions_collection = db["permissions"]
 
