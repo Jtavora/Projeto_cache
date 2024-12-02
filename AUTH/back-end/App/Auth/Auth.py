@@ -6,6 +6,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from App.ABAC import Abac
 from fastapi.responses import JSONResponse
+import calendar
 
 crypto = CryptContext(schemes=["sha256_crypt"])
 load_dotenv()
@@ -45,11 +46,17 @@ class Auth:
             else:
                 return JSONResponse(status_code=403, content={"message": "Invalid credentials"})
 
+        # Configurando o tempo de expiração para 2 minutos no futuro
         exp = datetime.utcnow() + timedelta(minutes=2)
+
+        # Convertendo para timestamp UNIX
+        exp_timestamp = calendar.timegm(exp.utctimetuple())
+
+        # Criando o payload do JWT
         payload = {
             "username": user.username,
             "role": user.role,
-            "exp": exp,
+            "exp": exp_timestamp,  # Usando o timestamp UNIX
             "iss": "auth"
         }
 
