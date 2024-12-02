@@ -8,11 +8,13 @@ namespace E_Commerce.Services
 {
     public class VendaService : IVendaService
     {
-         private readonly ECommerceContext _context;
+        private readonly ECommerceContext _context;
+        private readonly ILoggingService _logger;
 
-        public VendaService(ECommerceContext context)
+        public VendaService(ECommerceContext context, ILoggingService logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Venda>> GetAllVendasAsync()
@@ -84,6 +86,8 @@ namespace E_Commerce.Services
 
             _context.Vendas.Add(venda);
             await _context.SaveChangesAsync();
+
+            await _logger.LogAsync($"[NOVA VENDA] ID Venda: {venda.Id} | ID Usuario: {venda.UsuarioId} | Total: {venda.Total} | Cliente: {venda.Cliente}");
 
             return venda;
         }

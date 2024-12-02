@@ -19,11 +19,11 @@ IConnection conn = await factory.CreateConnectionAsync();
 
 builder.Services.AddSingleton<IConnection>(conn);
 
-
 builder.Services.AddScoped<IMessagePublisher, RabbitMQPublisher>();
 builder.Services.AddScoped<IVendaService, VendaService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddHttpClient<ILoggingService, LoggingService>(); // Configuração do HttpClient
 
 builder.Services.AddControllers();
 
