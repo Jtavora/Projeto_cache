@@ -47,7 +47,7 @@ namespace E_Commerce.Context
                 {
                     string changeType = entityEntry.State.ToString();
                     string message = $"{{ \"Produto\": \"{produto.Id}\", \"ChangeType\": \"{changeType}\" }}";
-                    await _messagePublisher.PublishAsync(message);
+                    await _messagePublisher.PublishAsync(message, "product_changes");
 
                     if (entityEntry.State == EntityState.Added)
                     {
@@ -58,6 +58,10 @@ namespace E_Commerce.Context
 
                 if (entityEntry.Entity is Venda venda)
                 {
+                    string changeType = entityEntry.State.ToString();
+                    string message = $"{{ \"Venda\": \"{venda.Id}\", \"ChangeType\": \"{changeType}\" }}";
+                    await _messagePublisher.PublishAsync(message, "sales_updates");
+
                     if (entityEntry.State == EntityState.Added)
                     {
                         venda.DataCriacao = DateTime.Now;

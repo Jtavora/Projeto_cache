@@ -7,6 +7,6 @@ namespace E_Commerce.Interfaces
 {
     public interface IMessagePublisher
     {
-        Task PublishAsync(string message);
+        Task PublishAsync(string message, string queueName);
     }
 }

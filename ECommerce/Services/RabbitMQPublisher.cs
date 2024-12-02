@@ -13,14 +13,14 @@ namespace E_Commerce.Services
             _conn = connection;
         }
 
-        public async Task PublishAsync(string message)
+        public async Task PublishAsync(string message, string queueName)
         {
             using var channel = await _conn.CreateChannelAsync();
-            await channel.QueueDeclareAsync(queue: "product_changes", durable: true, exclusive: false, autoDelete: false, arguments: null);
+            await channel.QueueDeclareAsync(queue: queueName, durable: true, exclusive: false, autoDelete: false, arguments: null);
 
             var body = Encoding.UTF8.GetBytes(message);
 
-            await channel.BasicPublishAsync(exchange: "", routingKey: "product_changes", body: body);
+            await channel.BasicPublishAsync(exchange: "", routingKey: queueName, body: body);
         }
     }
 }

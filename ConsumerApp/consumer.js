@@ -21,17 +21,29 @@ redisClient.connect().catch(err => {
 
 // Configurações do RabbitMQ
 const rabbitmqHost = 'amqp://admin:teste@rabbitmq';
-const queueName = 'product_changes';
+const productQueueName = 'product_changes';
+const salesQueueName = 'sales_updates';
 
-function invalidateCache(productId) {
-    redisClient.del(`produto:${productId}`, (err, response) => {
-      if (err) {
-        console.error("Erro ao invalidar o cache:", err);
-      } else {
-        console.log(`Cache invalidado para o produto ${productId}`);
-      }
-    });
-    console.log(`***Operação de cache concluída para o produto ${productId}***`);
+function invalidateProductCache(productId) {
+  redisClient.del(`produto:${productId}`, (err, response) => {
+    if (err) {
+      console.error("Erro ao invalidar o cache do produto:", err);
+    } else {
+      console.log(`Cache invalidado para o produto ${productId}`);
+    }
+  });
+  console.log(`***Operação de cache concluída para o produto ${productId}***`);
+}
+
+function invalidateSaleCache(saleId) {
+  redisClient.del(`venda:${saleId}`, (err, response) => {
+    if (err) {
+      console.error("Erro ao invalidar o cache da venda:", err);
+    } else {
+      console.log(`Cache invalidado para a venda ${saleId}`);
+    }
+  });
+  console.log(`***Operação de cache concluída para a venda ${saleId}***`);
 }
 
 amqp.connect(rabbitmqHost, (error0, connection) => {
@@ -40,28 +52,48 @@ amqp.connect(rabbitmqHost, (error0, connection) => {
     return;
   }
   console.log("Conexão com RabbitMQ estabelecida com sucesso.");
+  
   connection.createChannel((error1, channel) => {
     if (error1) {
       console.error("Erro ao criar canal:", error1);
       return;
     }
 
-    channel.assertQueue(queueName, { durable: true });
-    console.log("Fila declarada.");
+    // Configurar fila de produtos
+    channel.assertQueue(productQueueName, { durable: true });
+    console.log("Fila de produtos declarada.");
 
-    channel.consume(queueName, (msg) => {
+    channel.consume(productQueueName, (msg) => {
       const message = msg.content.toString();
-      console.log(`\n [x] Received ${message}`);
+      console.log(`\n [x] Produto recebido: ${message}`);
 
       try {
         const data = JSON.parse(message);
         if (data.Produto) {
-          invalidateCache(data.Produto);
+          invalidateProductCache(data.Produto);
         }
       } catch (error) {
-        console.error("Erro ao decodificar a mensagem:", error);
+        console.error("Erro ao decodificar a mensagem do produto:", error);
       }
-    }, { noAck: true });
+    }, { noAck: false });
+
+    // Configurar fila de vendas
+    channel.assertQueue(salesQueueName, { durable: true });
+    console.log("Fila de vendas declarada.");
+
+    channel.consume(salesQueueName, (msg) => {
+      const message = msg.content.toString();
+      console.log(`\n [x] Venda recebida: ${message}`);
+
+      try {
+        const data = JSON.parse(message);
+        if (data.Venda) {
+          invalidateSaleCache(data.Venda);
+        }
+      } catch (error) {
+        console.error("Erro ao decodificar a mensagem de venda:", error);
+      }
+    }, { noAck: false });
 
     console.log(" [*] Esperando por mensagens. Para sair, pressione CTRL+C");
   });

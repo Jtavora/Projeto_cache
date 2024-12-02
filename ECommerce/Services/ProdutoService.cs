@@ -10,11 +10,13 @@ namespace E_Commerce.Services
     {
         private readonly ECommerceContext _context;
         private readonly ICacheService _cacheService;
+        private readonly ILoggingService _logger;
 
-        public ProdutoService(ECommerceContext context, ICacheService cacheService)
+        public ProdutoService(ECommerceContext context, ICacheService cacheService, ILoggingService logger)
         {
             _context = context;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Produto>> GetAllProdutosAsync()
@@ -48,6 +50,8 @@ namespace E_Commerce.Services
         {
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
+            
+            await _logger.LogAsync($"[NOVO PRODUTO] ID Produto: {produto.Id} | Nome: {produto.Nome} | Descrição: {produto.Descricao} | Preço: {produto.Preco} | Quantidade em Estoque: {produto.QuantidadeEstoque} | Ativo: {produto.Ativo}");
 
             return produto;
         }
@@ -67,12 +71,16 @@ namespace E_Commerce.Services
                 await _context.SaveChangesAsync();
             }
 
+            await _logger.LogAsync($"[PRODUTO ATUALIZADO] ID Produto: {existingProduto.Id} | Nome: {existingProduto.Nome} | Descrição: {existingProduto.Descricao} | Preço: {existingProduto.Preco} | Quantidade em Estoque: {existingProduto.QuantidadeEstoque} | Ativo: {existingProduto.Ativo}");
+
             return existingProduto;
         }
 
         public async Task<Produto> DeleteProdutoAsync(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
+
+            await _logger.LogAsync($"[PRODUTO DELETADO] ID Produto: {produto.Id} | Nome: {produto.Nome} | Descrição: {produto.Descricao} | Preço: {produto.Preco} | Quantidade em Estoque: {produto.QuantidadeEstoque} | Ativo: {produto.Ativo}");
 
             if (produto != null)
             {

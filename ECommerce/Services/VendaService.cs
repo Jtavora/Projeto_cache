@@ -110,22 +110,31 @@ namespace E_Commerce.Services
             return venda;
         }
 
-        public async Task<bool> UpdateVendaAsync(int id, Venda venda)
+        public async Task<Venda> UpdateVendaAsync(int id, VendaDTO venda)
         {
-            if (id != venda.Id)
+            var vendaToUpdate = await _context.Vendas.FindAsync(id);
+
+            if (vendaToUpdate == null)
             {
-                return false;
+                return null;
             }
 
-            _context.Entry(venda).State = EntityState.Modified;
+            vendaToUpdate.UsuarioId = venda.UsuarioId;
+            vendaToUpdate.Cliente = venda.Cliente;
+            vendaToUpdate.Pagamento = venda.Pagamento;
+
             await _context.SaveChangesAsync();
 
-            return true;
+            await _logger.LogAsync($"[VENDA ATUALIZADA] ID Venda: {vendaToUpdate.Id} | ID Usuario: {vendaToUpdate.UsuarioId} | Total: {vendaToUpdate.Total} | Cliente: {vendaToUpdate.Cliente}");
+
+            return vendaToUpdate;
         }
 
         public async Task<bool> DeleteVendaAsync(int id)
         {
             var venda = await _context.Vendas.FindAsync(id);
+
+            await _logger.LogAsync($"[VENDA DELETADA] ID Venda: {venda.Id} | ID Usuario: {venda.UsuarioId} | Total: {venda.Total} | Cliente: {venda.Cliente}");
 
             if (venda == null)
             {

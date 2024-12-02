@@ -8,7 +8,7 @@ namespace E_Commerce.Interfaces
         Task<IEnumerable<Venda>> GetAllVendasAsync();
         Task<Venda> GetVendaByIdAsync(int id);
         Task<Venda> CreateVendaAsync(VendaDTO vendaDTO);
-        Task<bool> UpdateVendaAsync(int id, Venda venda);
+        Task<Venda> UpdateVendaAsync(int id, VendaDTO venda);
         Task<bool> DeleteVendaAsync(int id);
     }
 }

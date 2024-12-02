@@ -57,13 +57,21 @@ namespace E_Commerce.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Venda venda)
+        public async Task<IActionResult> Put(int id, [FromBody] VendaDTO venda)
         {
-            if (!await _vendaService.UpdateVendaAsync(id, venda))
+            try
             {
-                return BadRequest("Venda not found or id mismatch.");
+                var vendaUpdated = await _vendaService.UpdateVendaAsync(id, venda);
+                return Ok(vendaUpdated);
             }
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
