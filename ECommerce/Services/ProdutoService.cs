@@ -19,20 +19,7 @@ namespace E_Commerce.Services
 
         public async Task<IEnumerable<Produto>> GetAllProdutosAsync()
         {
-            string cacheKey = "produtos";
-            var cachedProdutos = await _cacheService.GetCacheValueAsync(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedProdutos))
-            {
-                return JsonSerializer.Deserialize<IEnumerable<Produto>>(cachedProdutos);
-            }
-
             var produtos = await _context.Produtos.ToListAsync();
-
-            if (produtos != null)
-            {
-                await _cacheService.SetCacheValueAsync(cacheKey, JsonSerializer.Serialize(produtos), TimeSpan.FromMinutes(10));
-            }
 
             return produtos;
         }
