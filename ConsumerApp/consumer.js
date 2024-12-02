@@ -72,8 +72,10 @@ amqp.connect(rabbitmqHost, (error0, connection) => {
         if (data.Produto) {
           invalidateProductCache(data.Produto);
         }
+        channel.ack(msg); // Reconhecer mensagem após processamento
       } catch (error) {
         console.error("Erro ao decodificar a mensagem do produto:", error);
+        channel.nack(msg, false, true); // Rejeitar e reencaminhar a mensagem em caso de erro
       }
     }, { noAck: false });
 
@@ -90,8 +92,10 @@ amqp.connect(rabbitmqHost, (error0, connection) => {
         if (data.Venda) {
           invalidateSaleCache(data.Venda);
         }
+        channel.ack(msg); // Reconhecer mensagem após processamento
       } catch (error) {
         console.error("Erro ao decodificar a mensagem de venda:", error);
+        channel.nack(msg, false, true); // Rejeitar e reencaminhar a mensagem em caso de erro
       }
     }, { noAck: false });
 

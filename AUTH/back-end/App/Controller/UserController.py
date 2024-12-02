@@ -2,17 +2,24 @@ from App.Models import UserModel
 from App.Models import PermissionModel
 from App.Auth import crypto
 from App.RBAC import Rbac
+from App.LogService import LoggingService
 from fastapi.responses import JSONResponse
 
 class UserController:
     def __init__(self):
         self.all_permissions = [permission['name'] for permission in PermissionModel.get_all_permissions()]
         self.rbac = Rbac()
+        self.log = LoggingService()
 
     def create_user(self, user_data, token_data):
-        if not self.rbac.can_acess(token_data['role'], 'create_user'):
-            return JSONResponse(status_code=403, content={"message": "Permission denied"})
-
+        try:
+            if not self.rbac.can_acess(token_data['role'], 'create_user'):
+                self.log.log(f"[CREATE USER FAILED] User: {token_data['username']} | Permission denied for {token_data['role']} to create user")
+                return JSONResponse(status_code=403, content={"message": "Permission denied"})
+        except Exception as e:
+            self.log.log(f"[CREATE USER FAILED] {e}")
+            return JSONResponse(status_code=400, content={"message": str(e)})
+        
         hashed_password = crypto.hash(user_data.hashed_password)
         new_user = UserModel(
             username=user_data.username,
@@ -21,9 +28,12 @@ class UserController:
         )
 
         if not self.rbac.exist_permission(user_data.role):
+            self.log.log(f"[CREATE USER FAILED] User: {token_data['username']} | Invalid role")
             return JSONResponse(status_code=400, content={"message": "Invalid role"})
 
         user_id = UserModel.create_user(new_user)
+        
+        self.log.log(f"[CREATE USER SUCCESS] User: {token_data['username']} | New user created: {user_data.username}")
         return JSONResponse(status_code=201, content=user_id)
 
     def get_user_by_username(self, username):
@@ -33,8 +43,12 @@ class UserController:
         return None
 
     def get_all_users(self, token_data):
-        if not self.rbac.can_acess(token_data['role'], 'get_all_users'):
-            return JSONResponse(status_code=403, content={"message": "Permission denied"})
+        try:
+            if not self.rbac.can_acess(token_data['role'], 'get_all_users'):
+                return JSONResponse(status_code=403, content={"message": "Permission denied"})
+        except Exception as e:
+            self.log.log(f"[GET ALL USERS FAILED] {e}")
+            return JSONResponse(status_code=400, content={"message": str(e)})
         
         users = UserModel.get_all_users()
         return [user for user in users]
