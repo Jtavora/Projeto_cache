@@ -49,7 +49,8 @@ class Auth:
         payload = {
             "username": user.username,
             "role": user.role,
-            "exp": exp
+            "exp": exp,
+            "iss": "auth"
         }
 
         token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
