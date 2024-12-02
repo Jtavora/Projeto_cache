@@ -9,7 +9,7 @@ class LoggingService:
     def log(self, message):
         log_entry = {
             "logId": str(uuid.uuid4()),
-            "message": message
+            "message": "[AUTH]" + message
         }
 
         headers = {'Content-Type': 'application/json'}

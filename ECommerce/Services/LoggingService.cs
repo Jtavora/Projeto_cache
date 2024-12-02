@@ -18,7 +18,7 @@ namespace E_Commerce.Services
             var logEntry = new
             {
                 logId = Guid.NewGuid().ToString(),
-                message = message
+                message = "[ECOMMERCE]" + message
             };
 
             var content = new StringContent(JsonSerializer.Serialize(logEntry), Encoding.UTF8, "application/json");
