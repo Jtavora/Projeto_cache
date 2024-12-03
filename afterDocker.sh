@@ -41,6 +41,18 @@ add_jwt_plugin() {
         --data "config.claims_to_verify=exp"
 }
 
+# Função para adicionar o plugin Feature Check
+add_feature_check_plugin() {
+    local service_name=$1
+    local required_feature=$2
+
+    echo -e "${YELLOW}\nAdicionando plugin Feature Check para serviço: $service_name${NC}"
+    curl -i -X POST $KONG_ADMIN_URL/services/$service_name/plugins \
+        --header 'Content-Type: application/x-www-form-urlencoded' \
+        --data-urlencode "name=feature-check" \
+        --data-urlencode "config.required_feature=$required_feature"
+}
+
 # Função para criar um consumidor
 create_consumer() {
     local consumer_name=$1
@@ -80,6 +92,10 @@ create_route "auth-service" "/auth"
 # Adicionar plugin JWT para proteção
 add_jwt_plugin "ecommerce-service"
 add_jwt_plugin "log-monitoring-service"
+
+# Adicionar plugin Feature Check
+add_feature_check_plugin "ecommerce-service" "eCommerce"
+add_feature_check_plugin "log-monitoring-service" "logCheck"
 
 # Criar um consumidor compartilhado
 create_consumer "shared-consumer"
