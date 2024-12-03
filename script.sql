@@ -15,3 +15,17 @@ VALUES
 ('Relógio Smartwatch', 'Relógio com monitoramento de atividades físicas', 349.99, 35, 1, GETDATE(), GETDATE()),
 ('Bicicleta de Montanha', 'Bicicleta com 21 marchas e suspensão dupla', 1199.99, 5, 1, GETDATE(), GETDATE()),
 ('Kindle Paperwhite', 'Leitor de e-books com tela antirreflexo', 499.99, 18, 1, GETDATE(), GETDATE());
+
+-- Possiveis features para microserviços
+-- logCheck --> Acesso ao microserviço de log
+-- eCommerce --> Acesso ao microserviço de e-commerce
+
+-- Possiveis features para endpoints do microserviço auth
+
+-- create_permission --> Feature para criar novas permissões
+-- delete_permission --> Feature para deletar permissões
+-- get_all_permissions --> Feature para listar todas as permissões
+
+--create_user --> Feature para criar novos usuários
+--update_user --> Feature para atualizar usuários
+--get_all_users --> Feature para listar todos os usuários
