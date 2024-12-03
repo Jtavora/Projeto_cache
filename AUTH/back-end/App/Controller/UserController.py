@@ -72,6 +72,7 @@ class UserController:
     def get_all_users(self, token_data):
         try:
             if not self.rbac.can_acess(token_data['role'], 'get_all_users'):
+                self.log.log(f"[GET ALL USERS FAILED] User: {token_data['username']} | Permission denied for {token_data['role']} to get all users")
                 return JSONResponse(status_code=403, content={"message": "Permission denied"})
         except Exception as e:
             self.log.log(f"[GET ALL USERS FAILED] {e}")

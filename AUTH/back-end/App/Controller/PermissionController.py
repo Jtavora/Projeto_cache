@@ -43,6 +43,7 @@ class PermissionController:
     def get_all_permissions(self, token_data):
         try:
             if not self.rbac.can_acess(token_data['role'], 'get_all_permissions'):
+                self.log.log(f"[GET ALL PERMISSIONS FAILED] User: {token_data["username"]} | Permission denied")
                 return JSONResponse(status_code=403, content={"message": "Permission denied"})
         except Exception as e:
             self.log.log(f"[GET ALL PERMISSIONS FAILED] {e}")
