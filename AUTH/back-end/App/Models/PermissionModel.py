@@ -1,9 +1,9 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, ReadPreference
 from bson import ObjectId
 import uuid
 
 # Configuração da conexão com o MongoDB
-client = MongoClient("mongodb://user:password@mongo:27017/", readPreference='primary')
+client = MongoClient("mongodb://user:password@mongo:27017/", read_preference=ReadPreference.PRIMARY)
 db = client["AppDatabase"]
 permissions_collection = db["permissions"]
 
