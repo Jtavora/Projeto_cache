@@ -1,37 +1,133 @@
-# Sistema de Cache Dinâmico para Site de Alta Demanda
+# Sistema de Microsserviços com Cache Dinâmico
+
+---
+
+## Como Executar o Projeto
+
+1. **Suba os containers com Docker Compose:**
+ ```bash
+   docker compose up -d
+```
+
+2. **Aguarde o container de migração do Kong (kong-migrations) finalizar.**
+
+3. **Inicie o container do Kong (kong) novamente, ele acaba caindo junto depois da migration.**
+
+4. **Renicie o container consumer.**
+
+5. **Execute o script para configurar o Kong automaticamente:**
+  ```bash
+   ./afterDocker.sh
+  ```
+
+6. **Acesse as APIs por meio do Kong.**
+   - Utilize a collection do Postman disponível no repositório (Pasta Postman) para importar e testar as requisições.
+   - O acess_token esta configurado para expirar em 2 minutos.
+
+7. **Acesse o front-end para monitorar os logs em tempo real:**
+   - URL do front: [http://localhost:5255/front.html](http://localhost:5255/front.html).
+
+8. ***Permissions:***
+   - logCheck --> Acesso ao microserviço de log.
+   - eCommerce --> Acesso ao microserviço de e-commerce.
+   - create_permission --> Feature para criar novas permissões.
+   - delete_permission --> Feature para deletar permissões.
+   - get_all_permissions --> Feature para listar todas as permissões.
+   - create_user --> Feature para criar novos usuários.
+   - update_user --> Feature para atualizar usuários.
+   - get_all_users --> Feature para listar todos os usuários.
+---
 
 ## Descrição
-Este projeto é um sistema de cache dinâmico projetado para otimizar o acesso a informações em um site de alta demanda, como e-commerce ou redes sociais. O sistema utiliza um padrão de design Proxy para gerenciar o acesso ao cache e um padrão Observer para monitorar atualizações nos dados, garantindo que o cache seja invalidado ou atualizado em tempo real.
+Este projeto consiste em um sistema de microsserviços projetado para atender a demandas de alta performance, como em e-commerces. A arquitetura utiliza cache dinâmico para otimizar o desempenho, um barramento de eventos para sincronizar atualizações entre serviços e práticas modernas de autenticação e monitoramento.
 
-## Arquitetura
-O sistema é composto pelos seguintes componentes principais:
+---
 
-- **Proxy**: Intermediário que gerencia todas as requisições de dados. Verifica se os dados estão disponíveis no cache e, caso contrário, consulta o banco de dados. Também é responsável por invalidar ou atualizar o cache quando necessário.
-- **Cache**: Armazena dados frequentemente acessados para garantir um acesso rápido e reduzir a carga no banco de dados.
-- **Database**: Armazena as informações persistentes do sistema.
-- **Trigger**: Aciona eventos quando ocorre uma alteração no banco de dados.
-- **Notification**: Envia notificações sobre alterações detectadas no banco de dados.
-- **RabbitMQ**: Gerencia a fila de mensagens para notificação de alterações.
-- **Observer**: Monitora as notificações de alterações e instrui o Proxy a atualizar ou invalidar o cache.
+## Arquitetura de Microsserviços
 
-## Funcionamento
-1. **Requisição de Dados**: O usuário faz uma requisição de dados que passa pelo Proxy.
-2. **Verificação do Cache**: O Proxy verifica se os dados estão no Cache.
-   - Se os dados estiverem disponíveis, eles são retornados ao usuário.
-   - Se não estiverem, o Proxy consulta o banco de dados.
-3. **Consulta ao Banco de Dados**: O banco de dados retorna os dados ao Proxy, que atualiza o Cache e, em seguida, retorna os dados ao usuário.
-4. **Atualização de Dados**: Quando o usuário atualiza dados, o Proxy envia a atualização para o banco de dados.
-5. **Notificação de Alteração**: O Trigger detecta a alteração e envia uma notificação via RabbitMQ.
-6. **Atualização do Cache**: O Observer recebe a notificação e informa o Proxy para invalidar ou atualizar o Cache.
+### **AUTH**
+- **Framework:** FastAPI
+- **Banco de Dados:** MongoDB
+- **Funcionalidades:**
+  - Autenticação de toda a aplicação.
+  - Implementação de RBAC e ABAC.
+  - Uso de cache para validação de tokens.
+- **Pontos Interessantes:**
+  - Utilização do campo `iss` no payload do token para identificar o emissor.
+  - Cache eficiente, sem necessidade de invalidação explícita do consumidor.
+
+---
+
+### **ECOMMERCE**
+- **Framework:** .NET
+- **Banco de Dados:** SQLServer
+- **Funcionalidades:**
+  - Gerenciamento de produtos e vendas.
+  - API assíncrona para consultas e manipulação de dados.
+  - Cache para dados específicos (produtos e vendas).
+- **Pontos Interessantes:**
+  - Estrutura assíncrona para evitar privação do pool de threads.
+  - Uso extensivo de boas práticas .NET.
+
+---
+
+### **CONSUMER**
+- **Framework:** Node.js
+- **Funcionalidades:**
+  - Declaração e consumo de filas RabbitMQ.
+  - Invalidação do cache em caso de atualizações.
+  - Monitora alterações em produtos e vendas.
+- **Filas Monitoradas:**
+  - `product_changes`
+  - `sales_updates`
+- **Pontos Interessantes:**
+  - Gerenciamento eficiente de filas e comunicação entre serviços.
+
+---
+
+### **LOG-MONITORING**
+- **Framework:** .NET com SignalR
+- **Banco de Dados:** Redis
+- **Funcionalidades:**
+  - Centralização de logs dos microsserviços.
+  - Monitoramento em tempo real via front-end.
+  - Registro detalhado de endpoints:
+    - AUTH: Todos os endpoints.
+    - ECOMMERCE: Endpoints de `create`, `update` e `delete`.
+
+---
+
+### **KONG**
+- **Funcionalidades:**
+  - Integração e gerenciamento de APIs dos microsserviços.
+  - Plugins personalizados para controle de acesso.
+  - Bloqueio de serviços com base em `roles` e `features`.
+- **Pontos Interessantes:**
+  - Configuração automatizada via script.
+  - Plugin `feature-check` para validação de permissões.
+
+---
 
 ## Tecnologias Utilizadas
-- **Banco de Dados**: SQLServer, MongoDB, Redis
-- **Mensageria**: RabbitMQ
-- **Cache**: Redis
-- **Frameworks**: .NET, FastApi
+- **Linguagens e Frameworks:**
+  - Python (FastAPI)
+  - .NET Core
+  - Node.js
+- **Bancos de Dados:**
+  - MongoDB
+  - SQLServer
+  - Redis
+- **Mensageria:**
+  - RabbitMQ
+- **Gateway de API:**
+  - Kong com plugins personalizados.
 
-## Diagrama de Sequência
+---
+
+## Diagramas
+
+### **Diagrama de Sequência**
 ![Diagrama de Sequência](out/AplicationDiagrams/sequencediagram/sequencediagram.png)
 
-## Diagrama de Classe
+### **Diagrama de Classe**
 ![Diagrama de Classe](out/AplicationDiagrams/classdiagram/classdiagram.png)

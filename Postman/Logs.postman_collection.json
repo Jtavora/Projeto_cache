@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "ec3b57f5-24fa-4b77-aee9-79846a2117eb",
+		"name": "Logs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28515259"
+	},
+	"item": [
+		{
+			"name": "GetLogs",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/log-monitoring/api/Logs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"log-monitoring",
+						"api",
+						"Logs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateLog",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"logId\": \"string2\",\r\n  \"message\": \"string2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/log-monitoring/api/Logs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"log-monitoring",
+						"api",
+						"Logs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
